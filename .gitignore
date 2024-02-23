@@ -1,0 +1,4 @@
+hashes.txt
+states.tar.gz
+*.sw[a-z]
+*.bak
