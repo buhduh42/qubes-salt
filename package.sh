@@ -3,11 +3,19 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 declare -a pillars
-pillars+=('global.sls')
-pillars+=('go.sls')
+pillars+=('user_pillar/top.sls')
+pillars+=('user_pillar/global.sls')
+pillars+=('user_pillar/go.sls')
+pillars+=('user_pillar/dev_packages.sls')
+pillars+=('user_pillar/vim.sls')
+pillars+=('user_pillar/git.sls')
 
 declare -a salt
-salt+=('go.sls')
+salt+=('user_salt/go.sls')
+salt+=('user_salt/dev_packages.sls')
+salt+=('user_salt/vim.sls')
+salt+=('user_salt/git.sls')
+salt+=('user_salt/bash_it.sls')
 
 declare -a formulas
 
@@ -17,17 +25,17 @@ tar_file=${DIR}/states.tar.gz
 list_files() {
 	echo "salt files:"
 	for s in ${salt[@]}; do
-		echo "	${DIR}/salt/${s}"
+		echo "	${DIR}/${s}"
 	done
 
 	echo "pillar files:"
 	for p in ${pillars[@]}; do
-		echo "	${DIR}/pillars/${p}"
+		echo "	${DIR}/${p}"
 	done
 
 	echo "formula files:"
 	for f in ${formulas[@]}; do
-		echo "	${DIR}/formulas/${p}"
+		echo "	${DIR}/${p}"
 	done
 }
 
@@ -67,19 +75,20 @@ EOF
 get_file_list() {
 	file_list=""
 	for s in ${salt[@]}; do
-		file_list+="${DIR}/salt/${s} "
+		file_list+="${s} "
 	done
 	for p in ${pillars[@]}; do
-		file_list+="${DIR}/pillars/${p} "
+		file_list+="${p} "
 	done
 	for f in ${formulas[@]}; do
-		file_list+="${DIR}/formulas/${f} "
+		file_list+="${f} "
 	done
 	echo -n "${file_list}"
 }
 
 generate_hashes() {
 	temp_hashes=/tmp/salt_hashes.txt
+	cd ${DIR}
 	file_list="$(get_file_list)"
 	sha256sum ${file_list} > ${temp_hashes}
 	if ! test -f ${temp_hashes}; then
@@ -92,7 +101,7 @@ generate_hashes() {
 generate_tar() {
 	verify_hash_file ${hash_file}
 	file_list="$(get_file_list)"
-	tar -czvf ${tar_file} ${hash_file} ${file_list}
+	tar -czvf ${tar_file} ${file_list}
 }
 
 while (( "$#" )); do
