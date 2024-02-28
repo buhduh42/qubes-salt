@@ -11,6 +11,7 @@ pillars+=('user_pillar/vim.sls')
 pillars+=('user_pillar/git.sls')
 
 declare -a salt
+salt+=('user_salt/top.sls')
 salt+=('user_salt/go.sls')
 salt+=('user_salt/dev_packages.sls')
 salt+=('user_salt/vim.sls')

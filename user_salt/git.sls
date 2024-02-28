@@ -1,4 +1,7 @@
 # vim: set syntax=yaml ts=2 sw=2 sts=2 et :
+
+{% grains['id'] | regex_search
+
 git_ssh:
 {% if not salt['file.directory_exists'](pillar['global_home'] + '/.ssh') %}
   file.directory:
