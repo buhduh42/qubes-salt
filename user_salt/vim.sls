@@ -10,39 +10,31 @@
 
 include:
   - git
-
-vim_known_hosts:
-{% if not salt['file.contains_regex']('^github.com .+$') %}
-  cmd.run:
-    - name: 'ssh-keyscan github.com >> {{ pillar['global_home'] }}/.ssh/known_hosts'
-    - cwd: {{ pillar['global_home'] }}/.vim
-    - runas: {{ pillar['global_user'] }}
-    - require:
-      - git_ssh_known_hosts
-{% else %}
-  test.nop: []
-{% endif %}
+  - bash_it
 
 configure_vim:
 {%- if salt['pkg.version'](vim_pkg) %}
   file.blockreplace:
-    - name:  {{ pillar['global_home'] }}/.bashrc
+    - name:  {{ pillar['global']['home'] }}/.bashrc
     - marker_start: "#START -  VIM ENV, managed by vim salt state, DO NOT EDIT"
     - marker_end: "#END -  VIM ENV, managed by vim salt state, DO NOT EDIT"
     - content: alias vi="{{ vim_alias }}" 
     - append_if_not_found: True
-  git.latest:
+    #See bash_it, this will "ensure"(hopefully) that bash_it runs before this such that bash_it doesn't clobber the .bashrc file
+    #might need to figure out how to do some .bashrc foo if this gets too unwieldy
+    - order: 2
+  git.cloned:
     - name: {{ pillar['vim']['repo'] }} 
-    - target: {{ pillar['global_home'] }}/.vim
+    - target: {{ pillar['global']['home'] }}/.vim
     - branch: {{ pillar['vim']['branch'] }}
-    - user: {{ pillar['global_user'] }}
+    - user: {{ pillar['global']['user'] }}
     - require:
       - git_ssh_config
-      - vim_known_hosts
+      - git_ssh_known_hosts
   cmd.run:
-    - name: {{ pillar['global_home'] }}/.vim/pullSubtrees.sh
-    - cwd: {{ pillar['global_home'] }}/.vim
-    - runas: {{ pillar['global_user'] }}
+    - name: {{ pillar['global']['home'] }}/.vim/pullSubtrees.sh
+    - cwd: {{ pillar['global']['home'] }}/.vim
+    - runas: {{ pillar['global']['user'] }}
     - require:
       - git: configure_vim
       - git_user_name

@@ -6,4 +6,5 @@ git:
   land_title:
     <<: *personal
     repo: git@github.com:buhduh/land_title.git
+    dir: land_title
 

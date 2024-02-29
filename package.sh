@@ -10,6 +10,9 @@ pillars+=('user_pillar/dev_packages.sls')
 pillars+=('user_pillar/vim.sls')
 pillars+=('user_pillar/git.sls')
 
+declare -a modules
+modules+=('user_salt/_modules/taxonomy.py')
+
 declare -a salt
 salt+=('user_salt/top.sls')
 salt+=('user_salt/go.sls')
@@ -17,6 +20,8 @@ salt+=('user_salt/dev_packages.sls')
 salt+=('user_salt/vim.sls')
 salt+=('user_salt/git.sls')
 salt+=('user_salt/bash_it.sls')
+salt+=('user_salt/docker/install.sls')
+salt+=('user_salt/docker/rootless.sls')
 
 declare -a formulas
 
@@ -27,6 +32,11 @@ list_files() {
 	echo "salt files:"
 	for s in ${salt[@]}; do
 		echo "	${DIR}/${s}"
+	done
+
+	echo "salt modules:"
+	for m in ${modules[@]}; do
+		echo "	${DIR}/${m}"
 	done
 
 	echo "pillar files:"
@@ -77,6 +87,9 @@ get_file_list() {
 	file_list=""
 	for s in ${salt[@]}; do
 		file_list+="${s} "
+	done
+	for m in ${modules[@]}; do
+		file_list+="${m} "
 	done
 	for p in ${pillars[@]}; do
 		file_list+="${p} "

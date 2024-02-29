@@ -4,8 +4,12 @@
 # <language>-<repo>, may need to extend it further, but this should be adequate for now
 
 user:
- 'go-*':
+  'go-*':
     - git
     - go
     - vim
-
+    - bash_it
+    - docker.rootless
+  'f38-x-dev':
+    - dev_packages
+    - docker.install
