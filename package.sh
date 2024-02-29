@@ -20,6 +20,7 @@ salt+=('user_salt/dev_packages.sls')
 salt+=('user_salt/vim.sls')
 salt+=('user_salt/git.sls')
 salt+=('user_salt/bash_it.sls')
+salt+=('user_salt/less.sls')
 salt+=('user_salt/docker/install.sls')
 salt+=('user_salt/docker/rootless.sls')
 

@@ -22,7 +22,7 @@ configure_vim:
     - append_if_not_found: True
     #See bash_it, this will "ensure"(hopefully) that bash_it runs before this such that bash_it doesn't clobber the .bashrc file
     #might need to figure out how to do some .bashrc foo if this gets too unwieldy
-    - order: 2
+    - order: {{  pillar['global']['bashrc']['priority']['low'] }}
   git.cloned:
     - name: {{ pillar['vim']['repo'] }} 
     - target: {{ pillar['global']['home'] }}/.vim

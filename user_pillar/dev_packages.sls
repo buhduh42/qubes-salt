@@ -10,5 +10,8 @@ dev_packages:
     git-subtree:
       alias: ''
       pkg: git-subtree
+    tmux:
+      alias: ''
+      pkg: tmux
   default:
     <<: *default

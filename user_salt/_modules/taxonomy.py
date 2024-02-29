@@ -1,26 +1,56 @@
 import re
 
-tax_regex = re.compile(r'^(\w+)-(\w+)$')
+# because I couldn't get grains.set[val] or any incantation to persist, im going to bake targetting data into the id
+# following a taxonomic scheme, currently:
+# <type>-<language>-<repo>, may need to extend it further, but this should be adequate for now
+# currently, type can be one of app or disp
+# haven't settled on a generic scheme yet
+
+tax_regex = re.compile(r'^(\w+)-(\w+)-(\w+)$')
+
+# TODO will probably need to bake in constraints to type, eg app ^ disp
 
 class Taxonomy:
-    def __init__(self, language, repo):
-        self.language = language
-        self.repo = repo
+    key_map = {
+        'type': 1,
+        'language': 2,
+        'repo': 3,
+    }
 
-def _parse(to_parse):
-    match = tax_regex.search(to_parse)
-    if match is not None:
-        return Taxonomy(match.group(1), match.group(2))
-    return False
+    def __init__(self, to_check):
+        match = tax_regex.search(to_check)
+        if match is None:
+            return False
+        self.type = match.group(Taxonomy.key_map['type'])
+        self.language = match.group(Taxonomy.key_map['language'])
+        self.repo = match.group(Taxonomy.key_map['repo'])
+        
+    def get(self, key):
+        if key not in Taxonomy.key_map:
+            raise Exception("taxonomy type not recognized '%s'" % key)
+        return getattr(self, key)
+
+
+def get(key):
+    tax = Taxonomy(__grains__['id'])
+    if tax is not False:
+        return tax.get(key)
+    return None
+
+def type():
+    tax = Taxonomy(__grains__['id'])
+    if tax is False:
+        return None
+    return tax.get('type')
 
 def language():
-    tax = _parse(__grains__['id'])
-    if tax is not False:
-        return tax.language
-    return None
+    tax = Taxonomy(__grains__['id'])
+    if tax is False:
+        return None
+    return tax.get('language')
 
 def repo():
-    tax = _parse(__grains__['id'])
-    if tax is not False:
-        return tax.repo
-    return None
+    tax = Taxonomy(__grains__['id'])
+    if tax is False:
+        return None
+    return tax.get('repo')
