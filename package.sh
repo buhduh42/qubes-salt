@@ -9,6 +9,7 @@ pillars+=('user_pillar/go.sls')
 pillars+=('user_pillar/dev_packages.sls')
 pillars+=('user_pillar/vim.sls')
 pillars+=('user_pillar/git.sls')
+pillars+=('user_pillar/dnscrypt.sls')
 
 declare -a modules
 modules+=('user_salt/_modules/taxonomy.py')
@@ -21,8 +22,16 @@ salt+=('user_salt/vim.sls')
 salt+=('user_salt/git.sls')
 salt+=('user_salt/bash_it.sls')
 salt+=('user_salt/less.sls')
+
 salt+=('user_salt/docker/install.sls')
 salt+=('user_salt/docker/rootless.sls')
+
+salt+=('user_salt/dnscrypt/disp_vm.sls')
+salt+=('user_salt/dnscrypt/templates.sls')
+salt+=('user_salt/dnscrypt/files/etc/blocked-ips.txt')
+salt+=('user_salt/dnscrypt/files/etc/blocked-names.txt')
+salt+=('user_salt/dnscrypt/files/etc/captive-portals.txt')
+salt+=('user_salt/dnscrypt/files/etc/dnscrypt-proxy.toml.jinja')
 
 declare -a formulas
 

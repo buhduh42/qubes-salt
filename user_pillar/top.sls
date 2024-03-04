@@ -6,3 +6,4 @@ user:
     - dev_packages
     - vim
     - git
+    - dnscrypt
