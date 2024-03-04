@@ -703,6 +703,7 @@ format = 'tsv'
 [sources]
 
   ### An example of a remote source from https://github.com/DNSCrypt/dnscrypt-resolvers
+  #TODO skip the src_hash key, easiest to just include it where it is
 {% for r, data in resolvers.items() %}
   [{{ r }}]
   {%- for d, sub_data in data.items() %}

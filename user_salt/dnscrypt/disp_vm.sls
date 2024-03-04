@@ -77,6 +77,22 @@ dnscrypt_rc_local:
         ${nft} 'insert rule ip qubes postrouting ip daddr != 127.0.0.1 tcp dport 53 counter drop'
         ${nft} 'insert rule ip qubes postrouting ip daddr != 127.0.0.1 udp dport 53 counter drop'
 
+create_resolver_cache:
+{% for _, resolver in pillar['dnscrypt']['resolvers'].items() %}
+  cmd.run:
+    - name: |-
+        hash=$(curl -s '{{ resolver['urls'][0] }}' | sha256sum | cut -f1 -d' ')
+        if ! test "${hash}" = "{{ resolver['src_hash'] }}; then
+          2>&1 echo "hashes don't match for {{ resolver['urls'][0] }}, exiting"
+          exit 1
+        fi
+        curl -s '{{ resolver['urls'][0] }}' > /rw/bind-dirs/resolver['cache_file']
+        chmod 600 resolver['cache_file']
+    - runas: {{ pillar['dnscrypt']['user'] }}
+    - require:
+      - /rw/bind-dirs{{ pillar['dnscrypt']['cache_dir'] }}
+{% endfor %}
+
 /rw/dnscrypt-proxy:
   file.directory:
     - user: {{ pillar['dnscrypt']['user'] }}
