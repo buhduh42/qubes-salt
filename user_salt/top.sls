@@ -16,3 +16,9 @@ user:
   'f38-x-dev':
     - dev_packages
     - docker.install
+  'dom0':
+    - dnscrypt.templates
+  'f39-m-dns':
+    - dnscrypt.templates
+  'f39-m-dns-dvm':
+    - dnscrypt.disp_vm

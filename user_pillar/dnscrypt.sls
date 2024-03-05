@@ -22,14 +22,12 @@ dnscrypt:
   listen_addresses:
     - 127.0.0.1:53
   sys_dns_name: sys-dns-test
-
   resolvers:
     'sources.public-resolvers':
       urls:
         - https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/public-resolvers.md
         - https://download.dnscrypt.info/resolvers-list/v3/public-resolvers.md
       #sha256 sum of the above, both should be same
-      src_hash: ddaadb81015d33c12d0e612d0ed1e1e4db033926ef53628481ec45909512854f
       cache_file: {{ cache_dir }}/public-resolvers.md
       minisign_key: RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3
       refresh_delay: 72
@@ -39,7 +37,6 @@ dnscrypt:
         - https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/relays.md
         - https://download.dnscrypt.info/resolvers-list/v3/relays.md
       #sha256 sum of the above, both should be same
-      src_hash: d44363c44e35de2032f930ba7d3f63b280c2ba77e81617d5d95105bd0304fc6a
       cache_file: {{ cache_dir }}/relays.md
       minisign_key: RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3
       refresh_delay: 72
