@@ -38,6 +38,17 @@ dnscrypt_rc_local:
     - content: |-
         nft='/usr/sbin/nft'
 
+        #redirect dns requests to local host
+        ${nft} flush chain ip qubes dnat-dns
+        ${nft} 'add rule ip qubes dnat-dns ip daddr 10.139.1.1 udp dport 53 dnat to 127.0.0.1:53'
+        ${nft} 'add rule ip qubes dnat-dns ip daddr 10.139.1.1 tcp dport 53 dnat to 127.0.0.1:53'
+        ${nft} 'add rule ip qubes dnat-dns ip daddr 10.139.1.2 udp dport 53 dnat to 127.0.0.1:53'
+        ${nft} 'add rule ip qubes dnat-dns ip daddr 10.139.1.2 tcp dport 53 dnat to 127.0.0.1:53'
+
+        #allow downstream qubes to connect over 53
+        ${nft} 'add rule ip qubes custom-input iifname "vif*" tcp dport 53 accept'
+        ${nft} 'add rule ip qubes custom-input iifname "vif*" udp dport 53 accept'
+
         echo 'nameserver 127.0.0.1' > /etc/resolv.conf
         # https://github.com/DNSCrypt/dnscrypt-proxy/wiki/Installation-linux
         # https://wiki.archlinux.org/title/Dnscrypt-proxy#Enable_EDNS0
@@ -49,8 +60,9 @@ dnscrypt_rc_local:
         ln -s /rw/dnscrypt-proxy /etc/dnscrypt-proxy
         /usr/bin/systemctl start dnscrypt-proxy.service
 
+        #bootstrapping dnscrypt requires dns requests for initial resolver resolution on non localhost
+        #wait until dnscrypt-proxy is running before disabling non local dns requests
         sleep 2
-
         count=0
         max=10
         while ! test "$(systemctl is-active dnscrypt-proxy.service)" = "active"; do
@@ -61,17 +73,6 @@ dnscrypt_rc_local:
           fi
           sleep .5
         done
-
-        #redirect dns requests to local host
-        ${nft} flush chain ip qubes dnat-dns
-        ${nft} 'add rule ip qubes dnat-dns ip daddr 10.139.1.1 udp dport 53 dnat to 127.0.0.1:53'
-        ${nft} 'add rule ip qubes dnat-dns ip daddr 10.139.1.1 tcp dport 53 dnat to 127.0.0.1:53'
-        ${nft} 'add rule ip qubes dnat-dns ip daddr 10.139.1.2 udp dport 53 dnat to 127.0.0.1:53'
-        ${nft} 'add rule ip qubes dnat-dns ip daddr 10.139.1.2 tcp dport 53 dnat to 127.0.0.1:53'
-
-        #allow downstream qubes to connect over 53
-        ${nft} 'add rule ip qubes custom-input iifname "vif*" tcp dport 53 accept'
-        ${nft} 'add rule ip qubes custom-input iifname "vif*" udp dport 53 accept'
 
         #drop alternate host dns requests
         ${nft} 'insert rule ip qubes postrouting ip daddr != 127.0.0.1 tcp dport 53 counter drop'

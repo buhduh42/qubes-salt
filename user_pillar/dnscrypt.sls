@@ -21,7 +21,7 @@ dnscrypt:
     - captive-portals.txt
   listen_addresses:
     - 127.0.0.1:53
-  sys_dns_name: sys-dns-test
+  sys_dns_name: sys-dns
   resolvers:
     'sources.public-resolvers':
       urls:
