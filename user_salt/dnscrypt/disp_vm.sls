@@ -58,6 +58,12 @@ dnscrypt_rc_local:
         /usr/sbin/sysctl -w net.ipv4.conf.all.route_localnet=1
 
         ln -s /rw/dnscrypt-proxy /etc/dnscrypt-proxy
+
+        ##wait until connectivity...., probably a smarter way to do this
+        while ! $(curl -I -s https://google.com 2>&1 >/dev/null); do
+          sleep 1
+        done
+
         /usr/bin/systemctl start dnscrypt-proxy.service
 
         #bootstrapping dnscrypt requires dns requests for initial resolver resolution on non localhost
