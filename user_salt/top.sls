@@ -5,14 +5,20 @@
 # currently, type can be one of app or disp
 # haven't settled on a generic scheme yet
 
+base: &base
+  - less
+  - git
+  - vim
+  - bash_it
+
 user:
   '*-go-*':
-    - less
-    - git
-    - vim
-    - bash_it
+    <<: *base
     - go
     - docker.rootless
+  '*-rust-*':
+    <<: *base
+    - rust
   'f38-x-dev':
     - dev_packages
     - docker.install

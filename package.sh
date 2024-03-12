@@ -33,6 +33,9 @@ salt+=('user_salt/dnscrypt/files/etc/blocked-names.txt')
 salt+=('user_salt/dnscrypt/files/etc/captive-portals.txt')
 salt+=('user_salt/dnscrypt/files/etc/dnscrypt-proxy.toml.jinja')
 
+salt+=('user_salt/rust/files/rustup.sh')
+salt+=('user_salt/rust/init.sls')
+
 declare -a formulas
 
 hash_file=${DIR}/hashes.txt

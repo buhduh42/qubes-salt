@@ -5,6 +5,10 @@ git:
     email: dale.owens42@gmail.com
   land_title:
     <<: *personal
-    repo: git@github.com:buhduh/land_title.git
+    repo: git@github.com:buhduh42/land_title.git
     dir: land_title
+  kos:
+    <<: *personal
+    repo: git@github.com:buhduh42/kos.git
+    dir: kos
 
